@@ -20,4 +20,4 @@ if __name__ == "__main__":
 	stream = Stream(auth,listener)
 	
 	x=input("Enter the keyword you want to track:")
-	stream.filter(track=[n])
+	stream.filter(track=[x])
