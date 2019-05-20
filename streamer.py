@@ -29,7 +29,7 @@ class TStreamer():
 		auth.set_access_token(credentials.ACCESS_TOKEN,credentials.ACCESS_TOKEN_SECRET)
 		
 		stream = Stream(auth,listener)
-		stream.filter(track=hashtag)
+		stream.filter(languages=['en'], track=hashtag)
 
 if __name__ == "__main__":
 	
