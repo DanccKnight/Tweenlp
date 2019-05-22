@@ -39,8 +39,14 @@ class TStreamer():
 		stream = Stream(Authenticator().authenticate(),listener)
 		stream.filter(languages=['en'], track=hashtag)
 
+class Analyzer():
+	def tweet_to_dataframe(self,tweets):
+		df = pd.DataFrame(data=[tweet.text for tweet in tweets], columns=['Tweets'])
+		return df
+
 if __name__ == "__main__":
-	
+
+	tweet_analyzer = Analyzer()
 	hashtag = ["PewdiePie","Tati Westbrook","James Charles"]
 	fetched_tweets = "tweets.json"
 	twitter_Streamer = TStreamer()
