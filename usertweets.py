@@ -38,11 +38,9 @@ if __name__ == "__main__":
 
 #	user_fetched_tweets = "userfetchedtweets.json"
 #	print(twitter_client.get_user_tweets(4,user_fetched_tweets))
-
 	api = twitter_client.get_twitter_client_api()
 	tweets = api.user_timeline(screen_name="pewdiepie",count=20)
-
 	df = tweet_analyzer.tweet_to_dataframe(tweets)
-	print(df.head(20))
+	print(df)
 
 
