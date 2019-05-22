@@ -17,11 +17,11 @@ class TwitterClient():
 		self.twitter_client = API(self.auth)
 		self.user = user
 
-	def get_user_tweets(self, num_tweets):
-		tweets = []
+	def get_user_tweets(self, num_tweets, user_fetched_tweets):
 		for tweet in Cursor(self.twitter_client.user_timeline, id=self.user).items(num_tweets):
-			tweets.append(tweet)
-		return tweets
+			print(tweet)
+			with open(user_fetched_tweets,'a') as file:
+				file.write(str(tweet))
 
 class Listener(StreamListener):
 	def on_data(self,data):
@@ -58,13 +58,14 @@ if __name__ == "__main__":
 	
 	hashtag = ["PewdiePie","Tati Westbrook","James Charles"]
 	fetched_tweets = "tweets.json"
-	
+	user_fetched_tweets = "userfetchedtweets.json"	
+
 # If you want to fetch tweets of a person only, comment the last two statements only.
 # If you want to fetch tweets in general, comment the following two statements only.
 # For the argument in TwitterUser(), enter the username of the person following @
 	
 	twitter_client = TwitterClient('realDonaldTrump')
-	print(twitter_client.get_user_tweets(1))
+	print(twitter_client.get_user_tweets(4,user_fetched_tweets))
 				
 #	twitter_Streamer = TStreamer()
 #	twitter_Streamer.stream_tweets(fetched_tweets, hashtag)
