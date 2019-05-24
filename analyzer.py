@@ -5,6 +5,7 @@ import numpy as np
 path = '/home/ansuman/Twitter-NLP/tweets.txt'
 
 tweets_data = []
+tweets_text = []
 tweets_file = open(path,"r")
 for line in tweets_file:
 	try:
@@ -13,9 +14,12 @@ for line in tweets_file:
 	except Exception as e:
 		print(str(e))
 
-tweets = pd.DataFrame(data=[tweets_data.text for tweet in tweets_data],columns=['Tweets'])
-tweets['Retweet_Count'] = np.array([tweets_data.retweet_count for tweet in tweets_data])
+for i in range(len(tweets_data)):
+	tweets_text.append(tweets_data[i]['text'])
 
-print(df)
+for i in range(len(tweets_text)):
+	print(tweets_text[i])
 
-
+#tweets = pd.DataFrame(data=[tweets_data['text'] for tweet in tweets_data],columns=['Tweets'])
+#tweets['Retweet_Count'] = np.array([tweets_data['retweet_count'] for tweet in tweets_data])
+#print(pd)
