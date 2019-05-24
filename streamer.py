@@ -2,8 +2,10 @@ from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream 
 import credentials
+import pandas as pd
+import numpy as np
+import json 
 from tweepy import API
-from tweepy import Cursor 
 
 class Authenticator():
 		def authenticate(self):
@@ -12,9 +14,10 @@ class Authenticator():
 			return auth 
 
 class Listener(StreamListener):
+
 	def on_data(self,data):
 		try:
-			print(data)
+			#print(data)
 			with open(self.fetched_tweets,'a') as file:
 				file.write(data)
 			return True
@@ -22,8 +25,8 @@ class Listener(StreamListener):
 			print(str(e))
 		return True 
 
-	def on_error(self, status):
-		if status == 420:
+	def on_error(self, status_code):
+		if status_code == 420:
 			#In case you reach the rate limit
 			return False
 		print(status)
@@ -34,20 +37,13 @@ class Listener(StreamListener):
 class TStreamer():
 	
 	def stream_tweets(self, fetched_tweets, hashtag):
-		listener = Listener(fetched_tweets)
-		
+		listener = Listener(fetched_tweets)		
 		stream = Stream(Authenticator().authenticate(),listener)
 		stream.filter(languages=['en'], track=hashtag)
 
-class Analyzer():
-	def tweet_to_dataframe(self,tweets):
-		df = pd.DataFrame(data=[tweet.text for tweet in tweets], columns=['Tweets'])
-		return df
-
 if __name__ == "__main__":
 
-	tweet_analyzer = Analyzer()
-	hashtag = ["PewdiePie","Tati Westbrook","James Charles"]
-	fetched_tweets = "tweets.json"
 	twitter_Streamer = TStreamer()
-	twitter_Streamer.stream_tweets(fetched_tweets, hashtag)
+	hashtag = ["Modi"]
+	fetched_tweets = "tweets.txt"
+	tweets = twitter_Streamer.stream_tweets(fetched_tweets, hashtag)
