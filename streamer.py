@@ -8,18 +8,26 @@ import json
 from tweepy import API
 
 class Authenticator():
-		def authenticate(self):
+		def authenticate_and_get_API(self):
 			auth = OAuthHandler(credentials.CONSUMER_KEY,credentials.CONSUMER_SECRET)
 			auth.set_access_token(credentials.ACCESS_TOKEN,credentials.ACCESS_TOKEN_SECRET)
-			return auth 
+			api = tweepy.API(auth) 
+			return auth
 
 class Listener(StreamListener):
 
 	def on_data(self,data):
 		try:
 			#print(data)
-			with open(self.fetched_tweets,'a') as file:
-				file.write(data)
+			if("retweeted_status" in data):
+			#or data"in_reply_to_user_id" in data 
+			#or "in_reply_to_screen_name" in data):
+				return True
+			lst.append(data)	
+			for i in range(len(lst)):
+				print(lst[i])
+			#with open(self.fetched_tweets,'a') as file:
+			#	file.write(data)
 			return True
 		except BaseException as e:
 			print(str(e))
@@ -41,9 +49,12 @@ class TStreamer():
 		stream = Stream(Authenticator().authenticate(),listener)
 		stream.filter(languages=['en'], track=hashtag)
 
+lst = []
+
 if __name__ == "__main__":
 
 	twitter_Streamer = TStreamer()
 	hashtag = ["Modi"]
 	fetched_tweets = "tweets.txt"
 	tweets = twitter_Streamer.stream_tweets(fetched_tweets, hashtag)
+	
