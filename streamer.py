@@ -7,6 +7,8 @@ import numpy as np
 import json 
 from tweepy import API
 from tweepy.models import Status
+from textblob import TextBlob
+import re
 
 class Authenticator():
 		def authenticate_and_get_API(self):
@@ -17,7 +19,7 @@ class Authenticator():
 class Listener(StreamListener):		
 
 	count = 0
-	limit = 4
+	limit = 7
 	lst = []
 	
 	def on_data(self,raw_data):
@@ -61,14 +63,21 @@ class Analyzer():
 		df['Tweets'] = [tweets[i] for i in range(len(tweets))]
 		return df
 
+	def clean_tweet_text(self,tweet):
+		return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split())
+
+	def get_sentiment(self,tweet):
+		analysis = TextBlob(self.clean_tweet_text(tweet))
+		#print(analysis)
+		return analysis.sentiment.polarity		
+
 if __name__ == "__main__":
 	
 	tweet_analyzer = Analyzer()
 	stream_listener = Listener()
 	track = ["Elections"]
 	stream_listener.stream_tweets(track)
-	#df = tweet_analyzer.tweet_to_dataframe(Listener.lst)
-	#print(df)
-	for i in range(len(Listener.lst)):
-		print(Listener.lst[i])
-	
+	df = tweet_analyzer.tweet_to_dataframe(Listener.lst)
+	df['sentiment'] = np.array([tweet_analyzer.get_sentiment(tweet) for tweet in df['Tweets']])
+	print(df)	
+	print("\nAverage sentiment score from received tweets:",np.mean(df['sentiment']))
