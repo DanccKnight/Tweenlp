@@ -17,8 +17,9 @@ class Authenticator():
 class Listener(StreamListener):		
 
 	count = 0
-	limit = 5
-
+	limit = 4
+	lst = []
+	
 	def on_data(self,raw_data):
 		data = json.loads(raw_data)
 		if("retweeted_status" not in data):
@@ -30,9 +31,12 @@ class Listener(StreamListener):
 	
 	def on_status(self,status):
 		if(status.in_reply_to_status_id is None 
+		or status.in_reply_to_status_id_str is None
 		or status.in_reply_to_user_id is None
+		or status.in_reply_to_user_id_str is None 
 		or status.in_reply_to_screen_name is None):
-			print(Listener.count,status.text)
+			#print(Listener.count,status.text)
+			Listener.lst.append(status.text)
 			Listener.count+=1
 			if(Listener.count < Listener.limit):
 				return True
@@ -51,8 +55,20 @@ class Listener(StreamListener):
 		except KeyboardInterrupt:
 			print("Got keyboard interrupt")
 	
+class Analyzer():
+	def tweet_to_dataframe(self,tweets):
+		df = pd.DataFrame()
+		df['Tweets'] = [tweets[i] for i in range(len(tweets))]
+		return df
+
 if __name__ == "__main__":
 	
+	tweet_analyzer = Analyzer()
 	stream_listener = Listener()
-	hashtag = ["USA"]
-	stream_listener.stream_tweets(hashtag)
+	track = ["Elections"]
+	stream_listener.stream_tweets(track)
+	#df = tweet_analyzer.tweet_to_dataframe(Listener.lst)
+	#print(df)
+	for i in range(len(Listener.lst)):
+		print(Listener.lst[i])
+	
