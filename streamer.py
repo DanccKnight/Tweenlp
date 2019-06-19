@@ -19,8 +19,8 @@ class Authenticator():
 class Listener(StreamListener):		
 
 	count = 0
-	limit = 7
-	lst = []
+	limit = 10  #no of tweets to be fetched 
+	lst1 = []
 	
 	def on_data(self,raw_data):
 		data = json.loads(raw_data)
@@ -38,7 +38,7 @@ class Listener(StreamListener):
 		or status.in_reply_to_user_id_str is None 
 		or status.in_reply_to_screen_name is None):
 			#print(Listener.count,status.text)
-			Listener.lst.append(status.text)
+			Listener.lst1.append(status.text)
 			Listener.count+=1
 			if(Listener.count < Listener.limit):
 				return True
@@ -75,9 +75,11 @@ if __name__ == "__main__":
 	
 	tweet_analyzer = Analyzer()
 	stream_listener = Listener()
-	track = ["Elections"]
+	track = ["Sudan"]
 	stream_listener.stream_tweets(track)
-	df = tweet_analyzer.tweet_to_dataframe(Listener.lst)
+	df = tweet_analyzer.tweet_to_dataframe(Listener.lst1)
+	
 	df['sentiment'] = np.array([tweet_analyzer.get_sentiment(tweet) for tweet in df['Tweets']])
-	print(df)	
+	print(df)
 	print("\nAverage sentiment score from received tweets:",np.mean(df['sentiment']))
+
